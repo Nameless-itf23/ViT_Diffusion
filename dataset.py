@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 import os
 import random
 
-def dataloader(batch_size:int=64, data_num:int=10000, denoise_num:int=500, sigma:float=0.3):
+def dataloader(batch_size:int=64, data_num_rate:int=-1, denoise_num:int=500, sigma:float=0.3):
 
     data_path = './data'
     image_paths = [os.path.join(data_path, f) for f in os.listdir(data_path)]
@@ -46,6 +46,11 @@ def dataloader(batch_size:int=64, data_num:int=10000, denoise_num:int=500, sigma
     xs = []
     ts = []
     ys = []
+
+    if data_num_rate == -1:
+        data_num = images.shape[0]*denoise_num
+    else:
+        data_num = images.shape[0]*data_num_rate
 
     for num in range(data_num):
         tmp_image = images[random.randrange(len(images))].copy()
