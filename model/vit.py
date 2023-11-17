@@ -1,21 +1,12 @@
 # -*- coding: utf-8 -*-
 
-# ----------------------------
-# 必要なライブラリをインポート
-# ----------------------------
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 
-
-# ----------------------------
-# 2-3 Input Layer
-# ----------------------------
-print("=======2-3 Input Layer=======")
-
 class VitInputLayer(nn.Module): 
-    def __init__(self, in_channels:int=3, emb_dim:int=384, num_patch_row:int=2, image_size:int=32):
+    def __init__(self, in_channels:int=3, emb_dim:int=192, num_patch_row:int=4, image_size:int=32):
         """ 
         引数:
             in_channels: 入力画像のチャンネル数
@@ -57,7 +48,7 @@ class VitInputLayer(nn.Module):
             torch.randn(1, self.num_patch+1, emb_dim) 
         )
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, t: torch.Tensor) -> torch.Tensor:
         """ 
         引数:
             x: 入力画像。形状は、(B, C, H, W)。[式(1)]
@@ -94,21 +85,15 @@ class VitInputLayer(nn.Module):
 
 batch_size, channel, height, width= 2, 3, 32, 32
 x = torch.randn(batch_size, channel, height, width) 
-input_layer = VitInputLayer(num_patch_row=2) 
+input_layer = VitInputLayer()
 z_0=input_layer(x)
 
 # (2, 5, 384)(=(B, N, D))になっていることを確認。 
 print(z_0.shape)
 
 
-
-# ----------------------------
-# 2-4 Self-Attention
-# ----------------------------
-print("=======2-4 Self-Attention=======")
-
 class MultiHeadSelfAttention(nn.Module): 
-    def __init__(self, emb_dim:int=384, head:int=3, dropout:float=0.):
+    def __init__(self, emb_dim:int=192, head:int=3, dropout:float=0.):
         """ 
         引数:
             emb_dim: 埋め込み後のベクトルの長さ 
@@ -205,7 +190,7 @@ print(out.shape)
 print("=======2-5 Encoder=======")
 
 class VitEncoderBlock(nn.Module): 
-    def __init__(self, emb_dim:int=384, head:int=8, hidden_dim:int=384*4, dropout: float=0.):
+    def __init__(self, emb_dim:int=192, head:int=8, hidden_dim:int=192*4, dropout: float=0.):
         """
         引数:
             emb_dim: 埋め込み後のベクトルの長さ
@@ -262,7 +247,7 @@ print(z_1.shape)
 print("=======2-6 ViTの実装=======")
 
 class Vit(nn.Module): 
-    def __init__(self, in_channels:int=3, num_classes:int=10, emb_dim:int=384, num_patch_row:int=2, image_size:int=32, num_blocks:int=7, head:int=8, hidden_dim:int=384*4, dropout:float=0.):
+    def __init__(self, in_channels:int=3, num_classes:int=10, emb_dim:int=192, num_patch_row:int=4, image_size:int=32, num_blocks:int=7, head:int=8, hidden_dim:int=192*4, dropout:float=0.):
         """ 
         引数:
             in_channels: 入力画像のチャンネル数
@@ -299,7 +284,7 @@ class Vit(nn.Module):
             nn.Linear(emb_dim, num_classes)
         )
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, t: torch.Tensor) -> torch.Tensor:
         """
         引数:
             x: ViTへの入力画像。形状は、(B, C, H, W)
