@@ -147,6 +147,9 @@ class VitEncoderBlock(nn.Module):
 class Vit(nn.Module): 
     def __init__(self, in_channels:int=3, emb_dim:int=192, num_patch_row:int=4, image_size:int=32, num_blocks:int=7, head:int=8, hidden_dim:int=192*4, dropout:float=0., t_max:int=500):
         super(Vit, self).__init__()
+        self.in_channels = in_channels
+        self.image_size = image_size
+
         self.input_layer = VitInputLayer(
             in_channels, 
             emb_dim, 
@@ -170,7 +173,7 @@ class Vit(nn.Module):
 
     def forward(self, x: torch.Tensor, t: torch.Tensor) -> torch.Tensor:
         # (B, C, H, W) -> (B, N, D)
-        out = self.input_layer(x)
+        out = self.input_layer(x, t)
         
         # (B, N, D) -> (B, N, D)
         out = self.encoder(out)

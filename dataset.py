@@ -13,10 +13,12 @@ def dataloader(batch_size:int=64, data_num:int=10000, denoise_num:int=500):
     image_paths = [os.path.join(data_path, f) for f in os.listdir(data_path)]
 
     images = []
-    for path in image_paths:
+    for i, path in enumerate(image_paths):
         img = Image.open(path)
         img_array = np.array(img)
         images.append(img_array)
+        print(f'\r{i+1}/{len(image_paths)}',end='')
+    print('')
 
     images = np.stack(images)
     images = np.transpose(images, (0, 3, 1, 2))
@@ -27,11 +29,13 @@ def dataloader(batch_size:int=64, data_num:int=10000, denoise_num:int=500):
         return a.reshape(sh).mean(-1).mean(1)
 
     tmp_images = []
-    for i in images:
+    for i, image in enumerate(images):
         dims = []
-        for dim in i:
+        for dim in image:
             dims.append(rebin(dim, (32, 32)))
         tmp_images.append(np.stack(dims))
+        print(f'\r{i+1}/{images.shape[0]}',end='')
+    print('')
     images = np.array(tmp_images)
 
     T = denoise_num
