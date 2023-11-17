@@ -182,6 +182,7 @@ class Vit(nn.Module):
         out = self.mlp_head(out)
 
         # (B, Np, M) -> (B, C, H, W)
+        # ???
         out = torch.reshape(out, (out.shape[0], out.shape[1], self.in_channels, -1))
         out = torch.transpose(out, 1, 2)
         pred = torch.reshape(out, (out.shape[0], self.in_channels, self.image_size, self.image_size))
