@@ -1,4 +1,4 @@
 batch: 256
 lr: 0.00001
 epoch: 10000
-data_num_rate: 10
+data_num_rate: 3

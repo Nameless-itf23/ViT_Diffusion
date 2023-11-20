@@ -8,7 +8,7 @@ if torch.cuda.is_available():
 else:
     device = 'cpu'
 
-model = Vit()
+model = Vit(t_max=100)
 
 model.load_state_dict(torch.load('weights/model.pth', map_location=torch.device(device)))
 
@@ -23,16 +23,16 @@ def show(out):
     plt.imshow(out[0])
     plt.show()
 
-T = 500
+T = 100
 
-SAMPLING_STEPS = 1
+SAMPLING_STEPS = 10
 WIDTH = 32
 HEIGHT = 32
 BATCH_SIZE = 1
 BATCH_COUNT = 1
 
 SIGMA = 0.3
-STRENGTH = 350
+STRENGTH = 80
 
 for _ in range(BATCH_COUNT):
 

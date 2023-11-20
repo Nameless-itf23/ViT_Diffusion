@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 import os
 import random
 
-def dataloader(batch_size:int=64, data_num_rate:int=-1, denoise_num:int=500, sigma:float=0.3):
+def dataloader(batch_size:int=64, data_num_rate:int=-1, t_max:int=500, sigma:float=0.3):
 
     data_path = './data'
     image_paths = [os.path.join(data_path, f) for f in os.listdir(data_path)]
@@ -38,7 +38,7 @@ def dataloader(batch_size:int=64, data_num_rate:int=-1, denoise_num:int=500, sig
     print('')
     images = np.array(tmp_images)
 
-    T = denoise_num
+    T = t_max
 
     def noise_scheduler(t):  # t -> sigma
         return 1 - t / T
@@ -48,7 +48,7 @@ def dataloader(batch_size:int=64, data_num_rate:int=-1, denoise_num:int=500, sig
     ys = []
 
     if data_num_rate == -1:
-        data_num = images.shape[0]*denoise_num
+        data_num = images.shape[0]*t_max
     else:
         data_num = images.shape[0]*data_num_rate
 

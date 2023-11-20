@@ -17,9 +17,9 @@ lr =  config['lr']
 epoch = config['epoch']
 data_num_rate = config['data_num_rate']
 
-train_loader, valid_loader = dataset.dataloader(batch_size=batch, data_num_rate=data_num_rate)
+train_loader, valid_loader = dataset.dataloader(batch_size=batch, data_num_rate=data_num_rate, t_max=100)
 
-model = Vit()
+model = Vit(emb_dim=64, t_max=100)
 
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
