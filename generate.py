@@ -42,7 +42,9 @@ for _ in range(BATCH_COUNT):
 
     # デノイズ
     for t in reversed(range(T - 1)):
-        noise = model(noise, torch.tensor([[t]] * BATCH_SIZE))
+        d_noise = model(noise, torch.tensor([[t]] * BATCH_SIZE))
+        r = noise_scheduler(t) / noise_scheduler(t+1)
+        noise = r * noise + (1 - r) * d_noise
 
     # ノイズ付加 -> デノイズの繰り返し
     for _ in range(SAMPLING_STEPS - 1):
@@ -55,7 +57,9 @@ for _ in range(BATCH_COUNT):
 
         # デノイズ
         for t in reversed(range(STRENGTH)):
-            noise = model(noise, torch.tensor([[t]] * BATCH_SIZE))
+            d_noise = model(noise, torch.tensor([[t]] * BATCH_SIZE))
+            r = noise_scheduler(t) / noise_scheduler(t+1)
+            noise = r * noise + (1 - r) * d_noise
 
     # 結果を保存
     output = noise.detach().numpy().clip(0, 1)

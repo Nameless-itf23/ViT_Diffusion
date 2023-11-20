@@ -57,10 +57,9 @@ def dataloader(batch_size:int=64, data_num_rate:int=-1, t_max:int=500, sigma:flo
         tmp_noise = np.random.normal(0.5, sigma, np.shape(tmp_image))
         t = random.randrange(T - 1)
         tmp_xs = noise_scheduler(t+1) * tmp_image + (1 - noise_scheduler(t+1)) * tmp_noise
-        tmp_ys = noise_scheduler(t) * tmp_image + (1 - noise_scheduler(t)) * tmp_noise
         xs.append(tmp_xs)
         ts.append([t])
-        ys.append(tmp_ys)
+        ys.append(tmp_noise)
         print(f'\r{num+1}/{data_num}',end='')
     print('')
 
